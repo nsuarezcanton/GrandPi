@@ -37,8 +37,8 @@ class ViewController: UIViewController {
     var interationsSlider: UISlider = {
         let slider = UISlider(frame: CGRect(x: 0, y: 0, width:280, height: 20))
         slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.minimumValue = 100
-        slider.maximumValue = 10000
+        slider.minimumValue = 500
+        slider.maximumValue = 50000
         slider.isContinuous = true
         slider.value = 50
         slider.tintColor = UIColor(red: 240/255.0, green: 240/255.0, blue: 240/255.0, alpha: 1)
@@ -131,13 +131,13 @@ class ViewController: UIViewController {
         nPointsInside = 0
         
         let background = DispatchQueue.global()
+        
         let start = DispatchTime.now()
         background.async {
             self.computeMonteCarlo(iterations: self.nIterations)
         }
-        
-        
         let end = DispatchTime.now()
+        
         let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
         let timeInterval = Double(nanoTime)
         print("Elapsed time: \(timeInterval) nanoseconds")
@@ -183,7 +183,11 @@ class ViewController: UIViewController {
                 point.backgroundColor = UIColor.blue
             }
             
-            monteCarloGraph.addSubview(point)
+            DispatchQueue.main.async {
+                self.monteCarloGraph.addSubview(point)
+                let pi = 4.0 * Double(self.nPointsInside) / Double(self.nIterations)
+                self.piLabel.text = String(pi)
+            }
         }
     }
 }
